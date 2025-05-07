@@ -1,10 +1,13 @@
 import React from 'react';
 
-const Header = ({ onAddUser }) => (
-  <div className="header">
-    <h1>UserHub Dashboard</h1>
-    <button onClick={onAddUser}>Add New User</button>
-  </div>
+const Header = ({ title, subtitle, onAddFood }) => (
+  <header className="hero">
+    <div className="hero-content">
+      <h1 className="hero-title">{title}</h1>
+      <p className="hero-subtitle">{subtitle}</p>
+      <button className="hero-button" onClick={onAddFood}>Add Menu Item</button>
+    </div>
+  </header>
 );
 
 export default Header;
