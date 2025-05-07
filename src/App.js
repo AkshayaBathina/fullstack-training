@@ -40,7 +40,7 @@ function App() {
       <UserModal open={modalOpen} onClose={() => setModalOpen(false)} title="Add User">
         <UserForm onSubmit={handleAddUser} />
       </UserModal>
-      <ToastContainer />
+      <ToastContainer position="top-center" autoClose={2000} hideProgressBar newestOnTop />
     </div>
   );
 }
