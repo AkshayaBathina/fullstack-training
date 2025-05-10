@@ -12,7 +12,11 @@ const FoodForm = ({ onSubmit, initialValues }) => {
       price: Yup.number().typeError('Price must be a number').required('Price is required'),
     }),
     onSubmit: (values, { resetForm }) => {
-      onSubmit({ ...values, id: initialValues?.id });
+      const foodData = {
+        ...values,
+        id: initialValues?.id || Date.now(),
+      };
+      onSubmit(foodData);
       resetForm();
     },
   });

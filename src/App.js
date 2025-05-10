@@ -3,7 +3,6 @@ import Header from './Header';
 import FoodList from './FoodList';
 import FoodModal from './FoodModal';
 import Loader from './Loader';
-import ErrorMessage from './ErrorMessage';
 import FoodForm from './FoodForm';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -12,24 +11,20 @@ import './index.css';
 function App() {
   const [foods, setFoods] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [editFood, setEditFood] = useState(null);
 
   useEffect(() => {
-    // fallback dummy data
     const dummyFoods = [
       { id: 1, name: 'Pizza Margherita', price: 250 },
       { id: 2, name: 'Veg Burger', price: 150 },
       { id: 3, name: 'Paneer Wrap', price: 180 },
     ];
-
     setTimeout(() => {
       setFoods(dummyFoods);
       setLoading(false);
     }, 1000);
   }, []);
-
 
   const handleAddFood = (newFood) => {
     setFoods(prevFoods => [...prevFoods, newFood]);
@@ -70,7 +65,7 @@ function App() {
       />
 
       <main className="main-content">
-        {loading ? <Loader /> : error ? <ErrorMessage message={error} /> : (
+        {loading ? <Loader /> : (
           <FoodList foods={foods} onEdit={openEditModal} onDelete={handleDeleteFood} />
         )}
       </main>
@@ -93,4 +88,3 @@ function App() {
 }
 
 export default App;
-
