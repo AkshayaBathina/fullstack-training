@@ -4,8 +4,8 @@ import FoodList from './FoodList';
 import FoodModal from './FoodModal';
 import Loader from './Loader';
 import FoodForm from './FoodForm';
-import { ToastContainer, toast } from 'react-toastify';
 import foodService from './Services/FoodService';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './index.css';
 
@@ -41,11 +41,20 @@ function HomePage() {
     </>
   );
 }
-
-function MenuPage({ foods, loading }) {
+function MenuPage({ foods, loading, cartItems, onAddToCart, onIncrement, onDecrement }) {
   return (
     <main className="main-content">
-      {loading ? <Loader /> : <FoodList foods={foods} />}
+      {loading ? (
+        <Loader />
+      ) : (
+        <FoodList
+          foods={foods}
+          cartItems={cartItems}
+          onAddToCart={onAddToCart}
+          onIncrement={onIncrement}
+          onDecrement={onDecrement}
+        />
+      )}
     </main>
   );
 }
@@ -64,6 +73,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editFood, setEditFood] = useState(null);
+   const [cartItems, setCartItems] = useState([]); 
 
   useEffect(() => {
     foodService.getFoods().then(data => {
@@ -102,15 +112,65 @@ function App() {
     setModalOpen(true);
   };
 
+  const handleAddToCart = (food) => {
+  setCartItems(prev => {
+    const existing = prev.find(item => item.id === food.id);
+    if (existing) {
+      return prev.map(item =>
+        item.id === food.id ? { ...item, quantity: item.quantity + 1 } : item
+      );
+    } else {
+      return [...prev, { ...food, quantity: 1 }];
+    }
+  });
+  toast.success(`${food.name} added to cart`);
+};
+const handleIncrement = (id) => {
+  setCartItems(prev =>
+    prev.map(item => item.id === id ? { ...item, quantity: item.quantity + 1 } : item)
+  );
+};
+
+const handleDecrement = (id) => {
+  setCartItems(prev =>
+    prev
+      .map(item =>
+        item.id === id ? { ...item, quantity: item.quantity - 1 } : item
+      )
+      .filter(item => item.quantity > 0)
+  );
+};
   return (
     <Router>
       <div className="app">
         <Navigation />
 
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/menu" element={<MenuPage foods={foods} loading={loading} />} />
-          <Route path="/manage" element={<ManagePage foods={foods} onEdit={openEditModal} onDelete={handleDeleteFood} onAdd={() => { setModalOpen(true); setEditFood(null); }} />} />
+           <Route path="/" element={<HomePage />} />
+          <Route
+  path="/menu"
+  element={
+    <MenuPage
+      foods={foods}
+      loading={loading}
+      cartItems={cartItems}
+      onAddToCart={handleAddToCart}
+      onIncrement={handleIncrement}
+      onDecrement={handleDecrement}
+    />
+      }
+/>
+          <Route
+            path="/manage"
+            element={
+              <ManagePage
+                foods={foods}
+                onEdit={openEditModal}
+                onDelete={handleDeleteFood}
+                onAdd={() => { setModalOpen(true); setEditFood(null); }}
+              />
+            }
+          />
         </Routes>
 
         <FoodModal
